@@ -1,4 +1,11 @@
 import { Card, CardContent } from "./ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "./ui/carousel";
 import latteImage from "@/assets/coffee-latte.jpg";
 import matchaImage from "@/assets/coffee-matcha.jpg";
 import pastryImage from "@/assets/coffee-pastry.jpg";
@@ -25,6 +32,27 @@ const menuItems = [
     price: "R$ 16,00",
     image: pastryImage,
   },
+  {
+    id: 4,
+    name: "Cappuccino Japonês",
+    description: "Cappuccino cremoso com toque de sakura e espuma aveludada",
+    price: "R$ 20,00",
+    image: latteImage,
+  },
+  {
+    id: 5,
+    name: "Hojicha Latte",
+    description: "Chá verde torrado com leite cremoso e aroma defumado",
+    price: "R$ 19,00",
+    image: matchaImage,
+  },
+  {
+    id: 6,
+    name: "Taiyaki",
+    description: "Waffle japonês em forma de peixe recheado com doce de feijão",
+    price: "R$ 14,00",
+    image: pastryImage,
+  },
 ];
 
 const Menu = () => {
@@ -38,27 +66,38 @@ const Menu = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {menuItems.map((item) => (
-            <Card
-              key={item.id}
-              className="group overflow-hidden hover:shadow-elegant transition-all duration-300 border-border/50"
-            >
-              <div className="relative h-64 overflow-hidden">
-                <img
-                  src={item.image}
-                  alt={item.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                />
-              </div>
-              <CardContent className="p-6">
-                <h3 className="text-xl font-serif font-semibold mb-2">{item.name}</h3>
-                <p className="text-muted-foreground mb-4">{item.description}</p>
-                <p className="text-2xl font-semibold text-primary">{item.price}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+        <Carousel
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+          className="w-full max-w-6xl mx-auto"
+        >
+          <CarouselContent>
+            {menuItems.map((item) => (
+              <CarouselItem key={item.id} className="md:basis-1/2 lg:basis-1/3">
+                <div className="p-2">
+                  <Card className="group overflow-hidden hover:shadow-elegant transition-all duration-300 border-border/50">
+                    <div className="relative h-64 overflow-hidden">
+                      <img
+                        src={item.image}
+                        alt={item.name}
+                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      />
+                    </div>
+                    <CardContent className="p-6">
+                      <h3 className="text-xl font-serif font-semibold mb-2">{item.name}</h3>
+                      <p className="text-muted-foreground mb-4">{item.description}</p>
+                      <p className="text-2xl font-semibold text-primary">{item.price}</p>
+                    </CardContent>
+                  </Card>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </section>
   );

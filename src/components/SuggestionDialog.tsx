@@ -19,6 +19,7 @@ interface SuggestionDialogProps {
 
 const SuggestionDialog = ({ open, onOpenChange }: SuggestionDialogProps) => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [suggestion, setSuggestion] = useState("");
   const { toast } = useToast();
 
@@ -31,6 +32,7 @@ const SuggestionDialog = ({ open, onOpenChange }: SuggestionDialogProps) => {
     });
 
     setName("");
+    setEmail("");
     setSuggestion("");
     onOpenChange(false);
   };
@@ -52,6 +54,17 @@ const SuggestionDialog = ({ open, onOpenChange }: SuggestionDialogProps) => {
               placeholder="Seu nome"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">E-mail</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="seu@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
