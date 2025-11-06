@@ -59,7 +59,7 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['Playfair Display', 'serif'],
+        serif: ['Kaisei Decol', 'serif'],
         sans: ['Noto Sans JP', 'sans-serif'],
       },
       boxShadow: {
