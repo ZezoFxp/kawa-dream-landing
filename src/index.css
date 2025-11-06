@@ -105,7 +105,7 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: 'Kaisei Decol', sans-serif;
+    font-family: 'Noto Sans JP', sans-serif;
   }
   
   h1, h2, h3, h4, h5, h6 {
