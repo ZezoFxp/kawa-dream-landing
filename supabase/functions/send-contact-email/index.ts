@@ -1,7 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@4.0.0";
 
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,38 +25,52 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log("Sending contact email from:", email, "name:", name);
 
-    // Enviar email para o administrador
-    const emailResponse = await resend.emails.send({
-      from: "KawaCoffee <onboarding@resend.dev>",
-      to: ["software.devjm@gmail.com"],
-      replyTo: email,
-      subject: `Nova mensagem de contato - ${name}`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-          <h2 style="color: #8B4513; border-bottom: 2px solid #D4A574; padding-bottom: 10px;">
-            Nova Mensagem de Contato - KawaCoffee
-          </h2>
-          
-          <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
-            <p><strong>De:</strong> ${name}</p>
-            <p><strong>E-mail:</strong> ${email}</p>
+    // Enviar email usando a API do Resend diretamente
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${RESEND_API_KEY}`,
+      },
+      body: JSON.stringify({
+        from: "KawaCoffee <onboarding@resend.dev>",
+        to: ["software.devjm@gmail.com"],
+        reply_to: email,
+        subject: `Nova mensagem de contato - ${name}`,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2 style="color: #8B4513; border-bottom: 2px solid #D4A574; padding-bottom: 10px;">
+              Nova Mensagem de Contato - KawaCoffee
+            </h2>
+            
+            <div style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+              <p><strong>De:</strong> ${name}</p>
+              <p><strong>E-mail:</strong> ${email}</p>
+            </div>
+            
+            <div style="background-color: #fff; padding: 20px; border-left: 4px solid #D4A574; margin: 20px 0;">
+              <h3 style="margin-top: 0; color: #8B4513;">Mensagem:</h3>
+              <p style="line-height: 1.6; white-space: pre-wrap;">${message}</p>
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
+              <p>Este email foi enviado através do formulário de contato do site KawaCoffee.</p>
+            </div>
           </div>
-          
-          <div style="background-color: #fff; padding: 20px; border-left: 4px solid #D4A574; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #8B4513;">Mensagem:</h3>
-            <p style="line-height: 1.6; white-space: pre-wrap;">${message}</p>
-          </div>
-          
-          <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd; color: #666; font-size: 12px;">
-            <p>Este email foi enviado através do formulário de contato do site KawaCoffee.</p>
-          </div>
-        </div>
-      `,
+        `,
+      }),
     });
 
-    console.log("Email sent successfully:", emailResponse);
+    const data = await res.json();
 
-    return new Response(JSON.stringify(emailResponse), {
+    if (!res.ok) {
+      console.error("Error from Resend API:", data);
+      throw new Error(data.message || "Failed to send email");
+    }
+
+    console.log("Email sent successfully:", data);
+
+    return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
         "Content-Type": "application/json",
